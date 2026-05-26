@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgres://postgres:RahasiaGilang2026@db.qygwxuhhepnwzoogmtas.supabase.co:5432/postgres"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+  avatar    String?
+  orders    Order[]
+  posts     Post[] // <-- WAJIB TAMBAHKAN BARIS INI
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User?   @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id           String      @id @default(cuid())
+  name         String
+  slug         String      @unique
+  description  String?     @db.Text
+  price        Decimal     @db.Decimal(12, 2)
+  comparePrice Decimal?    @db.Decimal(12, 2)
+  stock        Int         @default(0)
+  imageUrls    String[]
+  isFeatured   Boolean     @default(false)
+  isPublished  Boolean     @default(true)
+  tags         String[]
+  categoryId   String
+  category     Category    @relation(fields: [categoryId], references: [id])
+  orderItems   OrderItem[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([categoryId])
+  @@index([slug])
+  @@map("products")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  status          OrderStatus @default(PENDING)
+  totalAmount     Decimal     @db.Decimal(12, 2)
+  shippingAddress Json
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([userId])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  unitPrice Decimal @db.Decimal(12, 2)
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
