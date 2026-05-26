@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMRS – Sistem Informasi Manajemen Rumah Sakit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <style>
+        :root {
+            --primary: #0f4c35;
+            --primary-light: #1a6b4a;
+            --primary-lighter: #e8f5ef;
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --warning: #f97316;
+            --warning-light: #ffedd5;
+            --info: #3b82f6;
+            --info-light: #eff6ff;
+            --success: #22c55e;
+            --success-light: #dcfce7;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --sidebar-width: 240px;
+            --font: 'Plus Jakarta Sans', sans-serif;
+            --radius: 12px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: var(--font);
+            background: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========== LOGIN PAGE ========== */
+        #login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a3622 0%, #0f4c35 30%, #1a6b4a 60%, #0d3d2b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        #login-page::before {
+            content: '';
+            position: absolute;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            top: -250px;
+            right: -150px;
+            animation: floatBubble 12s ease-in-out infinite;
+        }
+        #login-page::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            bottom: -120px;
+            left: -80px;
+            animation: floatBubble 10s ease-in-out infinite reverse;
+        }
+        @keyframes floatBubble {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.05);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.97);
+            }
+        }
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 36px;
+            width: 420px;
+            max-width: 95vw;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+            animation: scaleIn 0.5s var(--transition);
+        }
+        .login-logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .login-logo .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 28px;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+        .login-logo h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+        .login-logo p {
+            font-size: 13px;
+            color: var(--gray-400);
+            margin-top: 4px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: var(--font);
+            outline: none;
+            transition: all var(--transition);
+            color: var(--gray-800);
+            background: #fff;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(15, 76, 53, 0.08);
+            transform: translateY(-1px);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 13px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: var(--font);
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-login:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(15, 76, 53, 0.3);
+        }
+        .btn-login:active {
+            transform: scale(0.97);
+        }
+
+        /* ========== APP LAYOUT ========== */
+        #app {
+            display: none;
+            min-height: 100vh;
+        }
+        #app.active {
+            display: flex;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .sidebar-brand {
+            padding: 18px 16px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-brand .brand-icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        .sidebar-brand .brand-text h2 {
+            font-size: 14px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.01em;
+        }
+        .sidebar-brand .brand-text p {
+            font-size: 10px;
+            color: var(--gray-400);
+            margin-top: 1px;
+        }
+        .sidebar-section {
+            padding: 12px 10px 4px;
+        }
+        .sidebar-section-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0 8px;
+            margin-bottom: 4px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            margin-bottom: 2px;
+            color: var(--gray-400);
+            font-size: 13px;
+            font-weight: 500;
+            position: relative;
+            user-select: none;
+        }
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: white;
+            padding-left: 14px;
+        }
+        .nav-item.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+        .nav-item .nav-icon {
+            font-size: 16px;
+            width: 22px;
+            text-align: center;
+        }
+        .sidebar-user {
+            margin-top: auto;
+            padding: 14px 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+        .sidebar-user:hover .user-avatar {
+            transform: scale(1.1) rotate(10deg);
+            box-shadow: 0 4px 15px rgba(15, 76, 53, 0.4);
+        }
+        .user-info h4 {
+            font-size: 12px;
+            color: white;
+            font-weight: 600;
+        }
+        .user-info p {
+            font-size: 10px;
+            color: var(--gray-400);
+        }
+        .logout-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray-500);
+            font-size: 18px;
+            padding: 6px;
+            border-radius: 8px;
+            transition: all var(--transition);
+        }
+        .logout-btn:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+        }
+        .topbar {
+            background: white;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .breadcrumb {
+            font-size: 13px;
+            color: var(--gray-400);
+            font-weight: 500;
+        }
+        .breadcrumb span {
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1.5px solid var(--gray-200);
+            background: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all var(--transition);
+            color: var(--gray-600);
+        }
+        .btn-icon:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+        .page-content {
+            padding: 24px;
+        }
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .page-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gray-900);
+            letter-spacing: -0.01em;
+        }
+        .page {
+            display: none;
+            animation: fadeIn 0.35s ease-out;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== BUTTONS ========== */
+        .btn {
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font);
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all var(--transition);
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(15, 76, 53, 0.25);
+        }
+        .btn-outline {
+            background: white;
+            color: var(--gray-700);
+            border: 1.5px solid var(--gray-200);
+        }
+        .btn-outline:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 6px;
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ========== STATS GRID ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all var(--transition);
+            cursor: pointer;
+            animation: slideUp 0.4s ease-out backwards;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary-lighter);
+        }
+        .stat-card:nth-child(1) {
+            animation-delay: 0.02s;
+        }
+        .stat-card:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+        .stat-card:nth-child(3) {
+            animation-delay: 0.14s;
+        }
+        .stat-card:nth-child(4) {
+            animation-delay: 0.2s;
+        }
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+            background: var(--primary-lighter);
+        }
+        .stat-info .label {
+            font-size: 12px;
+            color: var(--gray-500);
+            font-weight: 500;
+        }
+        .stat-info .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-top: 2px;
+            letter-spacing: -0.02em;
+        }
+
+        /* ========== TABLE ========== */
+        .table-wrapper {
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            overflow-x: auto;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-sm);
+            animation: scaleIn 0.35s ease-out;
+        }
+        .table-toolbar {
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-100);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gray-50);
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 7px 12px;
+            min-width: 220px;
+            transition: all var(--transition);
+        }
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 76, 53, 0.06);
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-family: var(--font);
+            outline: none;
+            width: 100%;
+            color: var(--gray-800);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        thead th {
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gray-500);
+            background: var(--gray-50);
+            border-bottom: 1px solid var(--gray-200);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+        tbody tr {
+            border-bottom: 1px solid var(--gray-100);
+            transition: all 0.15s;
+        }
+        tbody tr:hover {
+            background: #f8fcf9;
+            transform: translateX(3px);
+        }
+        tbody td {
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--gray-700);
+            vertical-align: middle;
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .badge-success {
+            background: var(--success-light);
+            color: #15803d;
+        }
+        .badge-warning {
+            background: var(--warning-light);
+            color: #c2410c;
+        }
+        .badge-danger {
+            background: var(--danger-light);
+            color: #b91c1c;
+        }
+        .badge-primary {
+            background: var(--primary-lighter);
+            color: var(--primary);
+        }
+        .badge-info {
+            background: var(--info-light);
+            color: #1d4ed8;
+        }
+        .action-btns {
+            display: flex;
+            gap: 5px;
+        }
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: all var(--transition);
+        }
+        .action-btn.view {
+            background: var(--info-light);
+            color: var(--info);
+        }
+        .action-btn.edit {
+            background: var(--accent-light);
+            color: #d97706;
+        }
+        .action-btn.del {
+            background: var(--danger-light);
+            color: var(--danger);
+        }
+        .action-btn:hover {
+            transform: scale(1.2);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ========== MODAL ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 560px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            animation: scaleIn 0.3s var(--transition);
+        }
+        .modal h3 {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+            letter-spacing: -0.01em;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== DASHBOARD GRID ========== */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+        .chart-card {
+            background: white;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+        .chart-card:hover {
+            box-shadow: var(--shadow);
+        }
+        .chart-container {
+            position: relative;
+            height: 280px;
+            width: 100%;
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 12px 18px;
+            border-radius: 10px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: var(--font);
+            animation: slideInRight 0.3s ease-out, fadeOut 0.3s 2.7s ease-out forwards;
+            pointer-events: auto;
+            box-shadow: var(--shadow);
+            max-width: 380px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast-success {
+            background: #059669;
+        }
+        .toast-error {
+            background: #dc2626;
+        }
+        .toast-info {
+            background: #2563eb;
+        }
+        @keyframes slideInRight {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ========== EMPTY STATE ========== */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-400);
+        }
+        .empty-state .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .empty-state p {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* ========== DETAIL VIEW ========== */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .detail-item {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        .detail-item .detail-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--gray-400);
+            letter-spacing: 0.06em;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .detail-item .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 8px;
+                gap: 4px;
+                justify-content: center;
+            }
+            .sidebar-brand,
+            .sidebar-section-label,
+            .sidebar-user {
+                display: none;
+            }
+            .sidebar-section {
+                padding: 0;
+                display: flex;
+                gap: 4px;
+                flex-wrap: wrap;
+            }
+            .nav-item {
+                padding: 6px 10px;
+                font-size: 11px;
+                border-radius: 6px;
+                margin: 0;
+            }
+            .nav-item .nav-icon {
+                font-size: 14px;
+                width: auto;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            #app.active {
+                flex-direction: column;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-card {
+                padding: 12px 14px;
+                gap: 8px;
+            }
+            .stat-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+                border-radius: 8px;
+            }
+            .stat-info .value {
+                font-size: 18px;
+            }
+            .page-content {
+                padding: 14px;
+            }
+            .topbar {
+                padding: 10px 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .login-card {
+                padding: 28px 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="logo-icon">🏥</div>
+                <h1>SIMRS Aplikasi</h1>
+                <p>Sistem Informasi Manajemen Rumah Sakit</p>
+            </div>
+            <div>
+                <h2 style="font-size:16px;font-weight:800;text-align:center;color:var(--gray-900)">Selamat Datang</h2>
+                <p style="font-size:12px;color:var(--gray-400);text-align:center;margin:4px 0 20px">Silakan masuk dengan kredensial Anda</p>
+                <div class="form-group"><label>Email</label><input type="email" id="login-email" value="admin@simrs.id" placeholder="admin@simrs.id"></div>
+                <div class="form-group"><label>Kata Sandi</label><input type="password" id="login-pass" value="admin123" placeholder="Masukkan kata sandi"></div>
+                <button class="btn-login" onclick="doLogin()">🔐 Masuk ke Sistem</button>
+                <p style="text-align:center;font-size:10px;color:var(--gray-400);margin-top:14px">Kredensial default: admin@simrs.id / admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">🏥</div>
+                <div class="brand-text"><h2>SIMRS Pro</h2><p>Manajemen RS v2.0</p></div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">📌 Utama</div>
+                <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">📋 Master Data</div>
+                <div class="nav-item" data-page="pasien" onclick="showPage('pasien',this)"><span class="nav-icon">👥</span> Pasien</div>
+                <div class="nav-item" data-page="dokter" onclick="showPage('dokter',this)"><span class="nav-icon">👨‍⚕️</span> Dokter</div>
+                <div class="nav-item" data-page="poliklinik" onclick="showPage('poliklinik',this)"><span class="nav-icon">🏪</span> Poliklinik</div>
+                <div class="nav-item" data-page="ruangan" onclick="showPage('ruangan',this)"><span class="nav-icon">🛏️</span> Ruangan</div>
+                <div class="nav-item" data-page="obat" onclick="showPage('obat',this)"><span class="nav-icon">💊</span> Data Obat</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">🏥 Pelayanan</div>
+                <div class="nav-item" data-page="rawatjalan" onclick="showPage('rawatjalan',this)"><span class="nav-icon">🚶</span> Rawat Jalan</div>
+                <div class="nav-item" data-page="rawatinap" onclick="showPage('rawatinap',this)"><span class="nav-icon">🛌</span> Rawat Inap</div>
+                <div class="nav-item" data-page="rekammedis" onclick="showPage('rekammedis',this)"><span class="nav-icon">📋</span> Rekam Medis</div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-label">🔬 Penunjang</div>
+                <div class="nav-item" data-page="farmasi" onclick="showPage('farmasi',this)"><span class="nav-icon">⚗️</span> Farmasi / Resep</div>
+                <div class="nav-item" data-page="keuangan" onclick="showPage('keuangan',this)"><span class="nav-icon">💰</span> Keuangan / Kasir</div>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-avatar">A</div>
+                <div class="user-info"><h4>Administrator</h4><p>admin@simrs.id</p></div>
+                <button class="logout-btn" onclick="doLogout()" title="Keluar">⏻</button>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <div class="topbar">
+                <div class="breadcrumb" id="breadcrumb">📊 <span>Dashboard</span></div>
+                <div class="topbar-actions">
+                    <button class="btn-icon" onclick="exportAllCSV()" title="Ekspor Semua Data ke CSV">📥</button>
+                    <button class="btn-icon" onclick="resetAllData()" title="Reset Semua Data">🔄</button>
+                    <span style="font-size:11px;color:var(--gray-400);font-weight:600;">SIMRS v2.0</span>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <!-- DASHBOARD -->
+                <div class="page active" id="page-dashboard">
+                    <div class="stats-grid" id="dashboard-stats"></div>
+                    <div class="dash-grid">
+                        <div class="chart-card">
+                            <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--gray-700)">📈 Statistik Data Rumah Sakit</h3>
+                            <div class="chart-container"><canvas id="simrsChart"></canvas></div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:16px" id="dashboard-tables"></div>
+                    </div>
+                </div>
+
+                <!-- PASIEN -->
+                <div class="page" id="page-pasien">
+                    <div class="page-header">
+                        <div><div class="page-title">👥 Data Rekam Medis Pasien</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('pasien')">➕ Tambah Pasien Baru</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari pasien..." onkeyup="filterTable('tbody-pasien',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('pasien')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>No. RM</th><th>Nama Pasien</th><th>NIK</th><th>L/P</th><th>Telepon</th><th>Jaminan</th><th>Aksi</th></tr></thead><tbody id="tbody-pasien"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- DOKTER -->
+                <div class="page" id="page-dokter">
+                    <div class="page-header">
+                        <div><div class="page-title">👨‍⚕️ Manajemen Data Dokter</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('dokter')">➕ Tambah Dokter</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari dokter..." onkeyup="filterTable('tbody-dokter',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('dokter')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>Nama</th><th>Spesialisasi</th><th>SIP</th><th>Poliklinik</th><th>Telepon</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-dokter"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- POLIKLINIK -->
+                <div class="page" id="page-poliklinik">
+                    <div class="page-header">
+                        <div><div class="page-title">🏪 Daftar Poliklinik</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('poliklinik')">➕ Tambah Poliklinik</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari poli..." onkeyup="filterTable('tbody-poliklinik',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('poliklinik')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>Nama Poliklinik</th><th>Deskripsi</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-poliklinik"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- RUANGAN -->
+                <div class="page" id="page-ruangan">
+                    <div class="page-header">
+                        <div><div class="page-title">🛏️ Data Kamar & Ruangan</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('ruangan')">➕ Tambah Ruangan</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari kamar..." onkeyup="filterTable('tbody-ruangan',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('ruangan')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>Nama Ruangan</th><th>Tipe</th><th>Lantai</th><th>Kapasitas</th><th>Tarif/Hari</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-ruangan"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- OBAT -->
+                <div class="page" id="page-obat">
+                    <div class="page-header">
+                        <div><div class="page-title">💊 Inventori Obat & Alkes</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('obat')">➕ Tambah Obat Baru</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari kode/nama obat..." onkeyup="filterTable('tbody-obat',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('obat')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>Kode</th><th>Nama Obat</th><th>Kategori</th><th>Stok</th><th>Harga Jual</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-obat"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- RAWAT JALAN -->
+                <div class="page" id="page-rawatjalan">
+                    <div class="page-header">
+                        <div><div class="page-title">🚶 Registrasi Rawat Jalan (Poli)</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('rawatjalan')">➕ Daftarkan Antrian</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari antrian..." onkeyup="filterTable('tbody-rawatjalan',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('rawatjalan')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>No. Urut</th><th>Kode Registrasi</th><th>Pasien</th><th>Dokter</th><th>Poliklinik</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-rawatjalan"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- RAWAT INAP -->
+                <div class="page" id="page-rawatinap">
+                    <div class="page-header">
+                        <div><div class="page-title">🛌 Admisi Rawat Inap</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('rawatinap')">➕ Registrasi Rawat Inap</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari..." onkeyup="filterTable('tbody-rawatinap',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('rawatinap')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>No. Admisi</th><th>Pasien</th><th>Dokter PJ</th><th>Kamar</th><th>Tgl Masuk</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-rawatinap"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- REKAM MEDIS -->
+                <div class="page" id="page-rekammedis">
+                    <div class="page-header">
+                        <div><div class="page-title">📋 Riwayat Rekam Medis</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('rekammedis')">➕ Catat Rekam Medis</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari diagnosis..." onkeyup="filterTable('tbody-rekammedis',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('rekammedis')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>Tanggal</th><th>Pasien</th><th>Dokter</th><th>Diagnosis</th><th>ICD-10</th><th>Aksi</th></tr></thead><tbody id="tbody-rekammedis"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- FARMASI -->
+                <div class="page" id="page-farmasi">
+                    <div class="page-header">
+                        <div><div class="page-title">⚗️ Apotek & Penyerahan Resep</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('farmasi')">➕ Buat Resep Baru</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari nota..." onkeyup="filterTable('tbody-farmasi',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('farmasi')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>No. Resep</th><th>Tanggal</th><th>Pasien</th><th>Dokter</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-farmasi"></tbody></table>
+                    </div>
+                </div>
+
+                <!-- KEUANGAN -->
+                <div class="page" id="page-keuangan">
+                    <div class="page-header">
+                        <div><div class="page-title">💰 Kasir Pembayaran & Invoice</div></div>
+                        <button class="btn btn-primary" onclick="openModalForm('keuangan')">➕ Terbitkan Billing</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <div class="search-box">🔍 <input type="text" placeholder="Cari invoice..." onkeyup="filterTable('tbody-keuangan',this.value)"></div>
+                            <button class="btn btn-sm btn-outline" onclick="exportCSV('keuangan')">📥 Ekspor CSV</button>
+                        </div>
+                        <table><thead><tr><th>No. Invoice</th><th>Tanggal</th><th>Pasien</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tbody-keuangan"></tbody></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="globalModal">
+        <div class="modal">
+            <h3 id="modalTitle">Judul Form</h3>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal()">❌ Batal</button>
+                <button class="btn btn-primary" id="modalSaveBtn">💾 Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        (function() {
+            // ==================== DATABASE ====================
+            const STORAGE_KEY = 'SIMRS_DATA_V2_FULL';
+            let db = {
+                pasien: [],
+                dokter: [],
+                poliklinik: [],
+                ruangan: [],
+                obat: [],
+                rawatJalan: [],
+                rawatInap: [],
+                rekamMedis: [],
+                farmasi: [],
+                keuangan: []
+            };
+
+            let currentEditId = null;
+            let currentModalType = null;
+            let myChartInstance = null;
+
+            // ==================== PERSISTENCE ====================
+            function loadData() {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    try {
+                        db = JSON.parse(stored);
+                        // Ensure all keys exist
+                        const keys = ['pasien', 'dokter', 'poliklinik', 'ruangan', 'obat', 'rawatJalan', 'rawatInap',
+                            'rekamMedis', 'farmasi', 'keuangan'
+                        ];
+                        keys.forEach(k => { if (!db[k]) db[k] = []; });
+                    } catch (e) {
+                        seedDefaultData();
+                    }
+                } else {
+                    seedDefaultData();
+                }
+            }
+
+            function saveData() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+            }
+
+            function seedDefaultData() {
+                db.pasien = [
+                    { id: 'p1', rm: 'RM-000001', nama: 'Budi Santoso', nik: '3201010101900001',
+                        tglLahir: '1990-01-01', jenisKelamin: 'Laki-laki', telepon: '08521190223',
+                        alamat: 'Jl. Mawar No.1 Medan', jaminan: 'BPJS', noJaminan: '0001293882' },
+                    { id: 'p2', rm: 'RM-000002', nama: 'Siti Aminah', nik: '3201010101910002',
+                        tglLahir: '1995-03-12', jenisKelamin: 'Perempuan', telepon: '08139902881',
+                        alamat: 'Jl. Binjai KM 10', jaminan: 'Umum', noJaminan: '-' },
+                    { id: 'p3', rm: 'RM-000003', nama: 'Rudi Hartono', nik: '3201010101920003',
+                        tglLahir: '1988-07-22', jenisKelamin: 'Laki-laki', telepon: '08561234567',
+                        alamat: 'Jl. Sudirman No.45', jaminan: 'Asuransi Swasta', noJaminan: 'ASR-88291' }
+                ];
+                db.dokter = [
+                    { id: 'd1', nama: 'dr. Ahmad Fauzi, Sp.PD', spesialisasi: 'Penyakit Dalam',
+                        sip: 'SIP/2026/001', poliklinikId: 'pol1', telepon: '0812667123', status: 'Aktif' },
+                    { id: 'd2', nama: 'dr. Citra Lestari, Sp.A', spesialisasi: 'Spesialis Anak',
+                        sip: 'SIP/2026/082', poliklinikId: 'pol2', telepon: '0812778192', status: 'Aktif' },
+                    { id: 'd3', nama: 'dr. Denny Wijaya, Sp.OG', spesialisasi: 'Obstetri & Ginekologi',
+                        sip: 'SIP/2026/103', poliklinikId: 'pol3', telepon: '0813889900', status: 'Aktif' }
+                ];
+                db.poliklinik = [
+                    { id: 'pol1', nama: 'Poli Umum & Dalam', deskripsi: 'Pelayanan poli medis umum internal',
+                        status: 'Aktif' },
+                    { id: 'pol2', nama: 'Poli Anak & Tumbuh Kembang',
+                    deskripsi: 'Pemeriksaan kesehatan anak', status: 'Aktif' },
+                    { id: 'pol3', nama: 'Poli Kandungan & Kebidanan',
+                        deskripsi: 'Pemeriksaan ibu hamil dan kandungan', status: 'Aktif' }
+                ];
+                db.ruangan = [
+                    { id: 'r1', nama: 'Kamar Anggrek 01', tipe: 'VVIP', lantai: 1, kapasitas: 1, biaya: 1250000,
+                        status: 'Aktif' },
+                    { id: 'r2', nama: 'Kamar Melati 203', tipe: 'Kelas I', lantai: 2, kapasitas: 2, biaya: 650000,
+                        status: 'Aktif' },
+                    { id: 'r3', nama: 'Kamar Mawar 305', tipe: 'Kelas II', lantai: 3, kapasitas: 4, biaya: 350000,
+                        status: 'Aktif' }
+                ];
+                db.obat = [
+                    { id: 'o1', kode: 'OBT-001', nama: 'Amoxicillin 500mg', generik: 'Amoxicillin Trihydrate',
+                        kategori: 'Kapsul', satuan: 'strip', hargaBeli: 8000, hargaJual: 12000, stok: 150,
+                        status: 'Aktif' },
+                    { id: 'o2', kode: 'OBT-002', nama: 'Paracetamol Drops', generik: 'Paracetamol',
+                        kategori: 'Sirup', satuan: 'botol', hargaBeli: 14000, hargaJual: 20000, stok: 45,
+                        status: 'Aktif' },
+                    { id: 'o3', kode: 'OBT-003', nama: 'Omeprazole 20mg', generik: 'Omeprazole', kategori: 'Kapsul',
+                        satuan: 'strip', hargaBeli: 18000, hargaJual: 28000, stok: 80, status: 'Aktif' }
+                ];
+                db.rawatJalan = [
+                    { id: 'rj1', antrian: 1, noRegistrasi: 'RJ-20260501-01', pasienId: 'p1', dokterId: 'd1',
+                        poliklinikId: 'pol1', status: 'Diperiksa' },
+                    { id: 'rj2', antrian: 2, noRegistrasi: 'RJ-20260501-02', pasienId: 'p3', dokterId: 'd2',
+                        poliklinikId: 'pol2', status: 'Menunggu' }
+                ];
+                db.rawatInap = [
+                    { id: 'ri1', noAdmisi: 'RI-20260520-01', pasienId: 'p2', dokterId: 'd2', ruanganId: 'r1',
+                        tglMasuk: '2026-05-20', status: 'Dirawat' }
+                ];
+                db.rekamMedis = [
+                    { id: 'rm1', tanggal: '2026-05-25', pasienId: 'p1', dokterId: 'd1',
+                        diagnosis: 'Dyspepsia Syndrome akut & Kelelahan Fisik', icd: 'K30',
+                        tindakan: 'Pemberian antasida dan bedrest 3 hari.' }
+                ];
+                db.farmasi = [
+                    { id: 'fr1', noResep: 'RSP-882910', tanggal: '2026-05-25', pasienId: 'p1', dokterId: 'd1',
+                        status: 'Selesai' }
+                ];
+                db.keuangan = [
+                    { id: 'k1', noInvoice: 'INV-1002931', tanggal: '2026-05-25', pasienId: 'p2', total: 1950000,
+                        status: 'Lunas' }
+                ];
+                saveData();
+            }
+
+            // ==================== TOAST ====================
+            function showToast(message, type = 'info') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+                toast.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
+                container.appendChild(toast);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3200);
+            }
+
+            // ==================== HELPERS ====================
+            function getPasienNama(id) { const p = db.pasien.find(x => x.id === id); return p ? p.nama : '-'; }
+
+            function getDokterNama(id) { const d = db.dokter.find(x => x.id === id); return d ? d.nama : '-'; }
+
+            function getPoliklinikNama(id) { const p = db.poliklinik.find(x => x.id === id); return p ? p.nama : '-'; }
+
+            function getRuanganNama(id) { const r = db.ruangan.find(x => x.id === id); return r ? r.nama : '-'; }
+
+            function getCollectionKey(type) {
+                const map = { rawatjalan: 'rawatJalan', rawatinap: 'rawatInap', rekammedis: 'rekamMedis' };
+                return map[type] || type;
+            }
+
+            function generateId() { return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
+
+            // ==================== RENDER ALL ====================
+            function renderAll() {
+                renderPasien();
+                renderDokter();
+                renderPoliklinik();
+                renderRuangan();
+                renderObat();
+                renderRawatJalan();
+                renderRawatInap();
+                renderRekamMedis();
+                renderFarmasi();
+                renderKeuangan();
+                renderDashboard();
+            }
+
+            function renderTable(tbodyId, data, rowMapper) {
+                const tbody = document.getElementById(tbodyId);
+                if (!tbody) return;
+                if (!data || data.length === 0) {
+                    tbody.innerHTML =
+                        `<tr><td colspan="10"><div class="empty-state"><div class="empty-icon">📭</div><p>Belum ada data. Klik "+ Tambah" untuk membuat entri baru.</p></div></td></tr>`;
+                    return;
+                }
+                const type = tbodyId.replace('tbody-', '');
+                tbody.innerHTML = data.map(item => {
+                    const actions = `<div class="action-btns">
+                <button class="action-btn view" data-action="view" data-type="${type}" data-id="${item.id}" title="Detail">👁</button>
+                <button class="action-btn edit" data-action="edit" data-type="${type}" data-id="${item.id}" title="Ubah">✏️</button>
+                <button class="action-btn del" data-action="delete" data-type="${type}" data-id="${item.id}" title="Hapus">🗑</button>
+              </div>`;
+                    return '<tr>' + rowMapper(item) + '<td>' + actions + '</td></tr>';
+                }).join('');
+            }
+
+            function renderPasien() {
+                renderTable('tbody-pasien', db.pasien, p =>
+                    `<td><code>${p.rm}</code></td><td><strong>${p.nama}</strong></td><td>${p.nik||'-'}</td><td>${p.jenisKelamin}</td><td>${p.telepon||'-'}</td><td><span class="badge badge-primary">${p.jaminan}</span></td>`
+                    );
+            }
+
+            function renderDokter() {
+                renderTable('tbody-dokter', db.dokter, d =>
+                    `<td><strong>${d.nama}</strong></td><td>${d.spesialisasi}</td><td>${d.sip||'-'}</td><td>${getPoliklinikNama(d.poliklinikId)}</td><td>${d.telepon||'-'}</td><td><span class="badge badge-success">${d.status}</span></td>`
+                    );
+            }
+
+            function renderPoliklinik() {
+                renderTable('tbody-poliklinik', db.poliklinik, p =>
+                    `<td><strong>${p.nama}</strong></td><td>${p.deskripsi||'-'}</td><td><span class="badge badge-success">${p.status}</span></td>`
+                    );
+            }
+
+            function renderRuangan() {
+                renderTable('tbody-ruangan', db.ruangan, r =>
+                    `<td><strong>${r.nama}</strong></td><td>${r.tipe}</td><td>Lt. ${r.lantai}</td><td>${r.kapasitas} Bed</td><td>Rp ${parseInt(r.biaya||0).toLocaleString('id-ID')}</td><td><span class="badge badge-success">${r.status}</span></td>`
+                    );
+            }
+
+            function renderObat() {
+                renderTable('tbody-obat', db.obat, o =>
+                    `<td><code>${o.kode}</code></td><td><strong>${o.nama}</strong><br><small style="color:var(--gray-400)">${o.generik||''}</small></td><td>${o.kategori}</td><td><strong>${o.stok}</strong> ${o.satuan}</td><td>Rp ${parseInt(o.hargaJual||0).toLocaleString('id-ID')}</td><td><span class="badge ${o.stok>0?'badge-success':'badge-danger'}">${o.status}</span></td>`
+                    );
+            }
+
+            function renderRawatJalan() {
+                renderTable('tbody-rawatjalan', db.rawatJalan, r =>
+                    `<td><span class="badge badge-primary">Antrian ${r.antrian||1}</span></td><td><code>${r.noRegistrasi}</code></td><td><strong>${getPasienNama(r.pasienId)}</strong></td><td>${getDokterNama(r.dokterId)}</td><td>${getPoliklinikNama(r.poliklinikId)}</td><td><span class="badge badge-warning">${r.status}</span></td>`
+                    );
+            }
+
+            function renderRawatInap() {
+                renderTable('tbody-rawatinap', db.rawatInap, r =>
+                    `<td><code>${r.noAdmisi}</code></td><td><strong>${getPasienNama(r.pasienId)}</strong></td><td>${getDokterNama(r.dokterId)}</td><td>${getRuanganNama(r.ruanganId)}</td><td>${r.tglMasuk}</td><td><span class="badge badge-success">${r.status}</span></td>`
+                    );
+            }
+
+            function renderRekamMedis() {
+                renderTable('tbody-rekammedis', db.rekamMedis, r =>
+                    `<td>${r.tanggal}</td><td><strong>${getPasienNama(r.pasienId)}</strong></td><td>${getDokterNama(r.dokterId)}</td><td><span style="display:block;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.diagnosis}</span></td><td><code style="background:var(--gray-100);padding:2px 6px;border-radius:4px">${r.icd||'-'}</code></td>`
+                    );
+            }
+
+            function renderFarmasi() {
+                renderTable('tbody-farmasi', db.farmasi, f =>
+                    `<td><code>${f.noResep}</code></td><td>${f.tanggal}</td><td><strong>${getPasienNama(f.pasienId)}</strong></td><td>${getDokterNama(f.dokterId)}</td><td><span class="badge badge-warning">${f.status}</span></td>`
+                    );
+            }
+
+            function renderKeuangan() {
+                renderTable('tbody-keuangan', db.keuangan, k =>
+                    `<td><code>${k.noInvoice}</code></td><td>${k.tanggal}</td><td><strong>${getPasienNama(k.pasienId)}</strong></td><td><strong>Rp ${parseInt(k.total||0).toLocaleString('id-ID')}</strong></td><td><span class="badge ${k.status==='Lunas'?'badge-success':'badge-danger'}">${k.status}</span></td>`
+                    );
+            }
+
+            function renderDashboard() {
+                const stats = document.getElementById('dashboard-stats');
+                if (!stats) return;
+                stats.innerHTML = `
+              <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-info"><div class="label">Total Pasien</div><div class="value">${db.pasien.length}</div></div></div>
+              <div class="stat-card"><div class="stat-icon">👨‍⚕️</div><div class="stat-info"><div class="label">Dokter Aktif</div><div class="value">${db.dokter.filter(d=>d.status==='Aktif').length}</div></div></div>
+              <div class="stat-card"><div class="stat-icon">🚶</div><div class="stat-info"><div class="label">Kunjungan Poli</div><div class="value">${db.rawatJalan.length}</div></div></div>
+              <div class="stat-card"><div class="stat-icon">🛌</div><div class="stat-info"><div class="label">Pasien Opname</div><div class="value">${db.rawatInap.filter(r=>r.status==='Dirawat').length}</div></div></div>`;
+
+                const recentRJ = [...db.rawatJalan].slice(-4).reverse();
+                const recentRI = [...db.rawatInap].slice(-4).reverse();
+                const recentRM = [...db.rekamMedis].slice(-4).reverse();
+
+                const tablesDiv = document.getElementById('dashboard-tables');
+                if (tablesDiv) {
+                    tablesDiv.innerHTML = `
+                <div class="table-wrapper" style="margin-bottom:0">
+                  <div style="padding:12px 16px;font-weight:700;font-size:12px;border-bottom:1px solid var(--gray-100);background:var(--gray-50)">🚶 Kunjungan Jalan Terkini</div>
+                  <table><tbody>${recentRJ.length?recentRJ.map(r=>`<tr><td><strong>${getPasienNama(r.pasienId)}</strong><br><small>${getPoliklinikNama(r.poliklinikId)}</small></td><td><span class="badge badge-warning">${r.status}</span></td></tr>`).join(''):'<tr><td colspan="2" style="text-align:center;color:var(--gray-400);padding:14px">Tidak ada antrian</td></tr>'}</tbody></table>
+                </div>
+                <div class="table-wrapper" style="margin-bottom:0">
+                  <div style="padding:12px 16px;font-weight:700;font-size:12px;border-bottom:1px solid var(--gray-100);background:var(--gray-50)">🛌 Rawat Inap Aktif</div>
+                  <table><tbody>${recentRI.length?recentRI.map(r=>`<tr><td><strong>${getPasienNama(r.pasienId)}</strong><br><small>${getRuanganNama(r.ruanganId)}</small></td><td><span class="badge badge-success">${r.status}</span></td></tr>`).join(''):'<tr><td colspan="2" style="text-align:center;color:var(--gray-400);padding:14px">Kamar kosong</td></tr>'}</tbody></table>
+                </div>
+                <div class="table-wrapper" style="margin-bottom:0">
+                  <div style="padding:12px 16px;font-weight:700;font-size:12px;border-bottom:1px solid var(--gray-100);background:var(--gray-50)">📋 Rekam Medis Terbaru</div>
+                  <table><tbody>${recentRM.length?recentRM.map(r=>`<tr><td><strong>${getPasienNama(r.pasienId)}</strong><br><small style="color:var(--gray-400)">${r.diagnosis?.substring(0,40)}...</small></td><td><code>${r.icd||'-'}</code></td></tr>`).join(''):'<tr><td colspan="2" style="text-align:center;color:var(--gray-400);padding:14px">Belum ada catatan</td></tr>'}</tbody></table>
+                </div>`;
+                }
+                initChart();
+            }
+
+            function initChart() {
+                const ctx = document.getElementById('simrsChart');
+                if (!ctx) return;
+                if (myChartInstance) myChartInstance.destroy();
+                myChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Pasien', 'Dokter', 'Kamar', 'Obat', 'Rawat Jalan', 'Rawat Inap',
+                            'Rekam Medis'
+                        ],
+                        datasets: [{
+                            label: 'Jumlah Data',
+                            data: [db.pasien.length, db.dokter.length, db.ruangan.length, db.obat
+                                .length, db.rawatJalan.length, db.rawatInap.length, db
+                                .rekamMedis.length
+                            ],
+                            backgroundColor: ['#0f4c35', '#3b82f6', '#f59e0b', '#a855f7',
+                                '#f97316', '#22c55e', '#ef4444'
+                            ],
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1,
+                                    precision: 0 } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            function filterTable(tbodyId, keyword) {
+                const tbody = document.getElementById(tbodyId);
+                if (!tbody) return;
+                const rows = tbody.getElementsByTagName('tr');
+                const kw = keyword.toLowerCase().trim();
+                for (let row of rows) {
+                    row.style.display = kw === '' || row.textContent.toLowerCase().includes(kw) ? '' : 'none';
+                }
+            }
+
+            // ==================== FORM DEFINITIONS ====================
+            const formDefs = {
+                pasien: [
+                    { id: 'nama', label: 'Nama Lengkap Pasien', type: 'text', required: true },
+                    { id: 'nik', label: 'Nomor NIK KTP', type: 'text' },
+                    { id: 'tglLahir', label: 'Tanggal Lahir', type: 'date' },
+                    { id: 'jenisKelamin', label: 'Jenis Kelamin', type: 'select', options: ['Laki-laki',
+                            'Perempuan'
+                        ] },
+                    { id: 'telepon', label: 'No. HP / Telepon', type: 'text' },
+                    { id: 'alamat', label: 'Alamat Rumah', type: 'textarea' },
+                    { id: 'jaminan', label: 'Metode Penjamin', type: 'select', options: ['Umum', 'BPJS',
+                            'Asuransi Swasta'
+                        ] },
+                    { id: 'noJaminan', label: 'No Kartu Jaminan', type: 'text' }
+                ],
+                dokter: [
+                    { id: 'nama', label: 'Nama Lengkap Dokter & Gelar', type: 'text', required: true },
+                    { id: 'spesialisasi', label: 'Spesialisasi', type: 'text', required: true },
+                    { id: 'sip', label: 'Nomor SIP', type: 'text' },
+                    { id: 'poliklinikId', label: 'Poliklinik Utama', type: 'select', source: 'poliklinik' },
+                    { id: 'telepon', label: 'No. Kontak', type: 'text' },
+                    { id: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Nonaktif', 'Cuti'] }
+                ],
+                poliklinik: [
+                    { id: 'nama', label: 'Nama Poliklinik', type: 'text', required: true },
+                    { id: 'deskripsi', label: 'Deskripsi', type: 'textarea' },
+                    { id: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Nonaktif'] }
+                ],
+                ruangan: [
+                    { id: 'nama', label: 'Nama Kamar', type: 'text', required: true },
+                    { id: 'tipe', label: 'Tipe', type: 'select', options: ['VVIP', 'VIP', 'Kelas I', 'Kelas II',
+                            'Kelas III', 'ICU', 'Isolasi'
+                        ] },
+                    { id: 'lantai', label: 'Lantai', type: 'number' },
+                    { id: 'kapasitas', label: 'Kapasitas Bed', type: 'number' },
+                    { id: 'biaya', label: 'Tarif/Hari (Rp)', type: 'number' },
+                    { id: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Perbaikan', 'Penuh'] }
+                ],
+                obat: [
+                    { id: 'nama', label: 'Nama Dagang', type: 'text', required: true },
+                    { id: 'generik', label: 'Kandungan Generik', type: 'text' },
+                    { id: 'kategori', label: 'Kategori', type: 'select', options: ['Tablet', 'Kapsul', 'Sirup',
+                            'Injeksi', 'Salep', 'Cairan Infus'
+                        ] },
+                    { id: 'satuan', label: 'Satuan', type: 'select', options: ['strip', 'botol', 'ampul', 'tube',
+                            'pcs', 'box'
+                        ] },
+                    { id: 'stok', label: 'Stok', type: 'number' },
+                    { id: 'hargaBeli', label: 'Harga Beli (Rp)', type: 'number' },
+                    { id: 'hargaJual', label: 'Harga Jual (Rp)', type: 'number' },
+                    { id: 'status', label: 'Status', type: 'select', options: ['Aktif', 'Kosong'] }
+                ],
+                rawatjalan: [
+                    { id: 'pasienId', label: 'Pasien', type: 'select', source: 'pasien', required: true },
+                    { id: 'dokterId', label: 'Dokter', type: 'select', source: 'dokter', required: true },
+                    { id: 'poliklinikId', label: 'Poliklinik', type: 'select', source: 'poliklinik',
+                    required: true },
+                    { id: 'status', label: 'Status Antrian', type: 'select', options: ['Menunggu', 'Diperiksa',
+                            'Selesai', 'Batal'
+                        ] }
+                ],
+                rawatinap: [
+                    { id: 'pasienId', label: 'Pasien', type: 'select', source: 'pasien', required: true },
+                    { id: 'dokterId', label: 'Dokter PJ', type: 'select', source: 'dokter', required: true },
+                    { id: 'ruanganId', label: 'Kamar', type: 'select', source: 'ruangan', required: true },
+                    { id: 'tglMasuk', label: 'Tanggal Masuk', type: 'date' },
+                    { id: 'status', label: 'Status', type: 'select', options: ['Dirawat', 'Pulang', 'Rujuk'] }
+                ],
+                rekammedis: [
+                    { id: 'pasienId', label: 'Pasien', type: 'select', source: 'pasien', required: true },
+                    { id: 'dokterId', label: 'Dokter', type: 'select', source: 'dokter', required: true },
+                    { id: 'tanggal', label: 'Tanggal Periksa', type: 'date' },
+                    { id: 'diagnosis', label: 'Diagnosis', type: 'textarea', required: true },
+                    { id: 'icd', label: 'Kode ICD-10', type: 'text' },
+                    { id: 'tindakan', label: 'Tindakan/Terapi', type: 'textarea' }
+                ],
+                farmasi: [
+                    { id: 'pasienId', label: 'Pasien', type: 'select', source: 'pasien', required: true },
+                    { id: 'dokterId', label: 'Dokter Peresep', type: 'select', source: 'dokter', required: true },
+                    { id: 'tanggal', label: 'Tanggal Resep', type: 'date' },
+                    { id: 'status', label: 'Status', type: 'select', options: ['Pending', 'Diproses',
+                        'Selesai'] }
+                ],
+                keuangan: [
+                    { id: 'pasienId', label: 'Pasien', type: 'select', source: 'pasien', required: true },
+                    { id: 'tanggal', label: 'Tanggal Billing', type: 'date' },
+                    { id: 'total', label: 'Total Tagihan (Rp)', type: 'number', required: true },
+                    { id: 'status', label: 'Status Pembayaran', type: 'select', options: ['Belum Bayar',
+                            'Lunas'
+                        ] }
+                ]
+            };
+
+            function buildFormHtml(type) {
+                const fields = formDefs[type];
+                if (!fields) return '<p style="color:var(--danger)">Skema form tidak ditemukan.</p>';
+                return fields.map(f => {
+                    let input = '';
+                    if (f.type === 'select') {
+                        let opts = '';
+                        if (f.source) {
+                            const src = db[f.source] || [];
+                            opts = src.map(i => `<option value="${i.id}">${i.nama||i.rm||i.kode||i.id}</option>`)
+                                .join('');
+                        } else if (f.options) {
+                            opts = f.options.map(o => `<option value="${o}">${o}</option>`).join('');
+                        }
+                        input = `<select id="${f.id}"${f.required?' required':''}>${opts}</select>`;
+                    } else if (f.type === 'textarea') {
+                        input =
+                        `<textarea id="${f.id}" rows="3" placeholder="Masukkan detail..."${f.required?' required':''}></textarea>`;
+                    } else {
+                        input =
+                            `<input type="${f.type}" id="${f.id}"${f.required?' required':''} placeholder="${f.label}">`;
+                    }
+                    return `<div class="form-group"><label>${f.label}${f.required?' <span style="color:var(--danger)">*</span>':''}</label>${input}</div>`;
+                }).join('');
+            }
+
+            // ==================== MODAL ====================
+            function openModalForm(type, id = null) {
+                currentModalType = type;
+                currentEditId = id;
+                document.getElementById('modalTitle').innerText = id ? `✏️ Perbarui Data ${type}` :
+                    `➕ Entri Baru: ${type}`;
+                document.getElementById('modalBody').innerHTML = buildFormHtml(type);
+                document.getElementById('modalSaveBtn').style.display = '';
+                document.getElementById('globalModal').classList.add('show');
+
+                if (id) {
+                    loadDataToForm(type, id);
+                } else {
+                    const today = new Date().toISOString().slice(0, 10);
+                    document.querySelectorAll('#modalBody input[type="date"]').forEach(el => { if (!el.value) el
+                            .value = today; });
+                }
+            }
+
+            function loadDataToForm(type, id) {
+                const collKey = getCollectionKey(type);
+                const item = db[collKey].find(x => x.id === id);
+                if (!item) return;
+                for (let key in item) {
+                    const el = document.getElementById(key);
+                    if (el && key !== 'id') el.value = item[key] ?? '';
+                }
+            }
+
+            function saveModalForm() {
+                const type = currentModalType;
+                const fields = formDefs[type];
+                const collKey = getCollectionKey(type);
+                const isEdit = !!currentEditId;
+
+                // Validate required fields
+                for (let f of fields) {
+                    if (f.required) {
+                        const el = document.getElementById(f.id);
+                        if (!el || !el.value.trim()) {
+                            showToast(`Kolom "${f.label}" wajib diisi!`, 'error');
+                            if (el) el.focus();
+                            return;
+                        }
+                    }
+                }
+
+                let item = isEdit ? (db[collKey].find(x => x.id === currentEditId) || {}) : {};
+                item = { ...item, id: currentEditId || generateId() };
+
+                for (let f of fields) {
+                    const el = document.getElementById(f.id);
+                    if (el) {
+                        item[f.id] = (f.type === 'number' && el.value !== '') ? parseFloat(el.value) : el.value;
+                    }
+                }
+
+                // Auto-generate codes
+                if (!isEdit) {
+                    if (type === 'pasien') item.rm = `RM-${String(db.pasien.length+1).padStart(6,'0')}`;
+                    if (type === 'obat') item.kode = `OBT-${String(db.obat.length+1).padStart(3,'0')}`;
+                    if (type === 'rawatjalan') {
+                        item.noRegistrasi = `RJ-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${String(db.rawatJalan.length+1).padStart(3,'0')}`;
+                        item.antrian = db.rawatJalan.length + 1;
+                    }
+                    if (type === 'rawatinap') item.noAdmisi =
+                        `RI-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${String(db.rawatInap.length+1).padStart(2,'0')}`;
+                    if (type === 'farmasi') item.noResep = `RSP-${Date.now().toString().slice(-6)}`;
+                    if (type === 'keuangan') item.noInvoice = `INV-${Date.now().toString().slice(-6)}`;
+                }
+
+                if (isEdit) {
+                    db[collKey] = db[collKey].map(x => x.id === currentEditId ? item : x);
+                } else {
+                    db[collKey].push(item);
+                }
+
+                saveData();
+                closeModal();
+                renderAll();
+                showToast(isEdit ? '✅ Data berhasil diperbarui!' : '✅ Data baru berhasil disimpan!', 'success');
+            }
+
+            function closeModal() {
+                document.getElementById('globalModal').classList.remove('show');
+                document.getElementById('modalSaveBtn').style.display = '';
+                currentEditId = null;
+                currentModalType = null;
+            }
+
+            function deleteItem(type, id) {
+                if (!confirm('⚠️ Apakah Anda yakin ingin menghapus permanen data ini? Tindakan ini tidak dapat dibatalkan.'))
+                    return;
+                const collKey = getCollectionKey(type);
+                db[collKey] = db[collKey].filter(x => x.id !== id);
+                saveData();
+                renderAll();
+                showToast('🗑 Data berhasil dihapus.', 'info');
+            }
+
+            function viewDetail(type, id) {
+                const collKey = getCollectionKey(type);
+                const item = db[collKey].find(x => x.id === id);
+                if (!item) return;
+
+                let html = '<div class="detail-grid">';
+                for (let key in item) {
+                    if (key === 'id') continue;
+                    let val = item[key];
+                    if (key === 'pasienId') val = getPasienNama(val);
+                    if (key === 'dokterId') val = getDokterNama(val);
+                    if (key === 'poliklinikId') val = getPoliklinikNama(val);
+                    if (key === 'ruanganId') val = getRuanganNama(val);
+                    if (['biaya', 'hargaBeli', 'hargaJual', 'total'].includes(key) && val) val = 'Rp ' + parseInt(
+                        val).toLocaleString('id-ID');
+                    html +=
+                        `<div class="detail-item"><span class="detail-label">${key}</span><span class="detail-value">${val||'-'}</span></div>`;
+                }
+                html += '</div>';
+
+                document.getElementById('modalTitle').innerText = '📋 Detail Dokumen';
+                document.getElementById('modalBody').innerHTML = html;
+                document.getElementById('modalSaveBtn').style.display = 'none';
+                document.getElementById('globalModal').classList.add('show');
+            }
+
+            // ==================== EVENT DELEGATION ====================
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.action-btn');
+                if (!btn) return;
+                const action = btn.getAttribute('data-action');
+                const type = btn.getAttribute('data-type');
+                const id = btn.getAttribute('data-id');
+                if (!action || !type || !id) return;
+                if (action === 'view') viewDetail(type, id);
+                else if (action === 'edit') openModalForm(type, id);
+                else if (action === 'delete') deleteItem(type, id);
+            });
+
+            // Close modal on overlay click
+            document.getElementById('globalModal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // ==================== PAGE NAVIGATION ====================
+            function showPage(id, el) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                const page = document.getElementById('page-' + id);
+                if (page) page.classList.add('active');
+                if (el) el.classList.add('active');
+                const breadcrumb = document.getElementById('breadcrumb');
+                const pageNames = {
+                    dashboard: '📊 Dashboard',
+                    pasien: '👥 Pasien',
+                    dokter: '👨‍⚕️ Dokter',
+                    poliklinik: '🏪 Poliklinik',
+                    ruangan: '🛏️ Ruangan',
+                    obat: '💊 Data Obat',
+                    rawatjalan: '🚶 Rawat Jalan',
+                    rawatinap: '🛌 Rawat Inap',
+                    rekammedis: '📋 Rekam Medis',
+                    farmasi: '⚗️ Farmasi',
+                    keuangan: '💰 Keuangan'
+                };
+                if (breadcrumb) breadcrumb.innerHTML = pageNames[id] || id;
+                if (id === 'dashboard') initChart();
+                // Re-render the specific page
+                renderAll();
+            }
+
+            // ==================== EXPORT CSV ====================
+            function exportCSV(type) {
+                const collKey = getCollectionKey(type);
+                const data = db[collKey];
+                if (!data || data.length === 0) {
+                    showToast('Tidak ada data untuk diekspor.', 'error');
+                    return;
+                }
+                const headers = Object.keys(data[0]).filter(k => k !== 'id');
+                let csv = headers.join(',') + '\n';
+                csv += data.map(row =>
+                    headers.map(h => {
+                        let val = String(row[h] || '').replace(/"/g, '""');
+                        return `"${val}"`;
+                    }).join(',')
+                ).join('\n');
+
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `SIMRS_${type}_${new Date().toISOString().slice(0,10)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast(`📥 Data ${type} berhasil diekspor ke CSV!`, 'success');
+            }
+
+            function exportAllCSV() {
+                const allTypes = ['pasien', 'dokter', 'poliklinik', 'ruangan', 'obat', 'rawatjalan', 'rawatinap',
+                    'rekammedis', 'farmasi', 'keuangan'
+                ];
+                let allCsv = '';
+                allTypes.forEach(type => {
+                    const collKey = getCollectionKey(type);
+                    const data = db[collKey];
+                    if (data && data.length > 0) {
+                        allCsv += `\n=== ${type.toUpperCase()} ===\n`;
+                        const headers = Object.keys(data[0]).filter(k => k !== 'id');
+                        allCsv += headers.join(',') + '\n';
+                        allCsv += data.map(row =>
+                            headers.map(h => `"${String(row[h]||'').replace(/"/g,'""')}"`).join(',')
+                        ).join('\n') + '\n';
+                    }
+                });
+                if (!allCsv.trim()) { showToast('Tidak ada data untuk diekspor.', 'error'); return; }
+                const blob = new Blob(['\uFEFF' + allCsv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `SIMRS_AllData_${new Date().toISOString().slice(0,10)}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('📥 Semua data berhasil diekspor!', 'success');
+            }
+
+            function resetAllData() {
+                if (!confirm(
+                        '⚠️ PERINGATAN: Ini akan menghapus SEMUA data dan mengembalikan ke data default. Lanjutkan?'))
+                    return;
+                if (!confirm('🔴 KONFIRMASI TERAKHIR: Semua perubahan akan hilang. Yakin?')) return;
+                localStorage.removeItem(STORAGE_KEY);
+                seedDefaultData();
+                saveData();
+                renderAll();
+                showToast('🔄 Data berhasil direset ke default.', 'info');
+            }
+
+            // ==================== AUTH ====================
+            function doLogin() {
+                const email = document.getElementById('login-email').value.trim();
+                const pass = document.getElementById('login-pass').value.trim();
+                if (!email || !pass) {
+                    alert('Silakan isi email dan kata sandi.');
+                    return;
+                }
+                if (email === 'admin@simrs.id' && pass === 'admin123') {
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('app').classList.add('active');
+                    renderAll();
+                    showToast('✅ Selamat datang, Administrator!', 'success');
+                } else {
+                    alert('Email atau kata sandi salah. Gunakan admin@simrs.id / admin123');
+                }
+            }
+
+            function doLogout() {
+                if (!confirm('Keluar dari sistem?')) return;
+                document.getElementById('app').classList.remove('active');
+                document.getElementById('login-page').style.display = 'flex';
+                document.getElementById('login-pass').value = '';
+                showToast('👋 Anda telah keluar dari sistem.', 'info');
+            }
+
+            // Allow Enter key to login
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && document.getElementById('login-page').style.display !== 'none') {
+                    doLogin();
+                }
+            });
+
+            // ==================== INIT ====================
+            window.showPage = showPage;
+            window.doLogin = doLogin;
+            window.doLogout = doLogout;
+            window.openModalForm = openModalForm;
+            window.closeModal = closeModal;
+            window.filterTable = filterTable;
+            window.exportCSV = exportCSV;
+            window.exportAllCSV = exportAllCSV;
+            window.resetAllData = resetAllData;
+
+            loadData();
+            // Pre-render empty states
+            renderAll();
+
+            console.log('🏥 SIMRS v2.0 siap digunakan.');
+            console.log('📋 Kredensial: admin@simrs.id / admin123');
+            console.log('💾 Data tersimpan di localStorage:', STORAGE_KEY);
+        })();
+    </script>
+</body>
+</html>
